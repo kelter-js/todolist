@@ -1,6 +1,6 @@
 import React from 'react';
 import { IVisuallyHidden } from '../types/interfaces';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const Hider = styled.div`
   position: absolute;

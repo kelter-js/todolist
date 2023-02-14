@@ -1,16 +1,33 @@
 import React from 'react';
 import { Checkbox } from '@mui/material';
-import { ITask } from '../types/interfaces';
+import { ITaskComponent } from '../types/interfaces';
+import styled from 'styled-components';
+import { Button } from '@mui/material';
+
+const TaskItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+`;
 
 const Task = ({
   description,
   isDone,
-}: ITask): JSX.Element => {
+  id,
+  onDelete,
+  onChangeMark
+}: ITaskComponent): JSX.Element => {
   return (
-    <li>
-      <Checkbox checked={isDone} />
+    <TaskItem>
+      <Checkbox onChange={() => onChangeMark(id)} checked={isDone} />
       <p>{description}</p>
-    </li>
+      <Button onClick={() => onDelete(id)} color='warning' variant='contained'>Remove</Button>
+    </TaskItem>
   );
 }
 
