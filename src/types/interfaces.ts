@@ -7,12 +7,12 @@ export interface IVisuallyHidden {
 export interface ITask {
   description: string;
   isDone: boolean;
-  id: number;
+  id: string;
 }
 
 export interface ITaskComponent extends ITask {
-  onDelete: (id: number) => void;
-  onChangeMark: (id: number) => void;
+  onDelete: (id: string) => void;
+  onChangeMark: (id: string) => void;
 }
 
 export interface ITodolistContainer {
@@ -22,7 +22,8 @@ export interface ITodolistContainer {
 
 export interface ITodolist extends ITodolistContainer {
   currentFilter: string;
-  removeTask: (id: number) => void;
+  removeTask: (id: string) => void;
   changeFilter: (filter: FilterByValueTypes) => void;
-  changeTaskMark: (id: number) => void;
+  changeTaskMark: (id: string) => void;
+  addTask: (description: string) => void;
 }

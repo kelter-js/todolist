@@ -3,6 +3,7 @@ import { ITodolistContainer } from '../types/interfaces';
 import Todolist from './Todolist';
 import { FilterByValueTypes } from '../types/types';
 import { ITask } from '../types/interfaces';
+import { v1 } from 'uuid';
 
 const TodolistCointainer = ({
   title,
@@ -12,7 +13,7 @@ const TodolistCointainer = ({
   const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
   const [filterValue, setFilterValue] = useState<FilterByValueTypes>("all");
 
-  const removeTask = (id: number) => {
+  const removeTask = (id: string) => {
     setTasks(tasksList.filter(item => item.id !== id));
     setInitialTasks(initialTasks.filter(item => item.id !== id));
   }
@@ -21,7 +22,17 @@ const TodolistCointainer = ({
     setFilterValue(filter);
   }
 
-  const markTask = (id: number) => {
+  const addTask = (description: string) => {
+    const task = {
+      id: v1(),
+      description,
+      isDone: false,
+    }
+
+    setTasks((tasks) => [...tasks, task]);
+  }
+
+  const markTask = (id: string) => {
     const [target] = tasksList.filter(item => item.id === id);
     target.isDone = !target.isDone;
     if (filterValue === 'completed' || filterValue === 'active') {
@@ -52,6 +63,7 @@ const TodolistCointainer = ({
       changeFilter={onChangeFilter}
       currentFilter={filterValue}
       changeTaskMark={markTask}
+      addTask={addTask}
     />
   );
 }
