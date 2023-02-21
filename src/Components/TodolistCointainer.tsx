@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ITodolistContainer } from '../types/interfaces';
 import Todolist from './Todolist';
 import { FilterByValueTypes } from '../types/types';
@@ -9,13 +9,11 @@ const TodolistCointainer = ({
   title,
   tasks
 }: ITodolistContainer): JSX.Element => {
-  const [initialTasks, setInitialTasks] = useState<ITask[]>([...tasks]);
   const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
   const [filterValue, setFilterValue] = useState<FilterByValueTypes>("all");
 
   const removeTask = (id: string) => {
     setTasks(tasksList.filter(item => item.id !== id));
-    setInitialTasks(initialTasks.filter(item => item.id !== id));
   }
 
   const onChangeFilter = (filter: FilterByValueTypes) => {
@@ -34,7 +32,9 @@ const TodolistCointainer = ({
 
   const markTask = (id: string) => {
     const [target] = tasksList.filter(item => item.id === id);
+
     target.isDone = !target.isDone;
+
     if (filterValue === 'completed' || filterValue === 'active') {
       setTasks([...tasksList].filter(item => filterValue === 'completed' ? item.isDone === true : item.isDone === false));
     } else {
@@ -42,23 +42,21 @@ const TodolistCointainer = ({
     }
   }
 
-  useEffect(() => {
+  const tasksToRender = useMemo(() => {
     switch (filterValue) {
       case 'completed':
-        setTasks(initialTasks.filter(item => item.isDone === true));
-        break;
+        return tasksList.filter(item => item.isDone === true);
       case 'active':
-        setTasks(initialTasks.filter(item => item.isDone === false));
-        break;
+        return tasksList.filter(item => item.isDone === false);
       default:
-        setTasks(initialTasks);
+        return [...tasksList];
     }
-  }, [filterValue]);
+  }, [filterValue, tasksList]);
 
   return (
     <Todolist
       title={title}
-      tasks={tasksList}
+      tasks={tasksToRender}
       removeTask={removeTask}
       changeFilter={onChangeFilter}
       currentFilter={filterValue}
