@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
-import { Checkbox } from '@mui/material';
-import { ITaskComponent } from '../types/interfaces';
+import { Checkbox, Button } from '@mui/material';
 import styled from 'styled-components';
-import { Button } from '@mui/material';
+
+import { ITaskComponent } from '../types/interfaces';
 
 const TaskItem = styled.li`
   display: flex;
@@ -22,9 +21,9 @@ const Task = ({
   onDelete,
   onChangeMark
 }: ITaskComponent): JSX.Element => {
-  const onChange = useCallback(() => onChangeMark(id), [id, onChangeMark]);
+  const onChange = () => onChangeMark(id);
 
-  const deleteTask = useCallback(() => onDelete(id), [id, onDelete]);
+  const deleteTask = () => onDelete(id);
 
   return (
     <TaskItem>

@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { v1 } from 'uuid';
+
 import { ITodolistContainer } from '../types/interfaces';
-import Todolist from './Todolist';
 import { FilterByValueTypes } from '../types/types';
 import { ITask } from '../types/interfaces';
-import { v1 } from 'uuid';
+import Todolist from './Todolist';
 
 const TodolistCointainer = ({
   title,
@@ -23,7 +24,7 @@ const TodolistCointainer = ({
   const addTask = (description: string) => {
     const task = {
       id: v1(),
-      description,
+      description: description.trim(),
       isDone: false,
     }
 
@@ -36,7 +37,7 @@ const TodolistCointainer = ({
     target.isDone = !target.isDone;
 
     if (filterValue === 'completed' || filterValue === 'active') {
-      setTasks([...tasksList].filter(item => filterValue === 'completed' ? item.isDone === true : item.isDone === false));
+      setTasks(tasksList.filter(item => filterValue === 'completed' ? item.isDone === true : item.isDone === false));
     } else {
       setTasks([...tasksList]);
     }

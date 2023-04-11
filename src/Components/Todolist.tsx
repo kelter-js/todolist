@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button, TextField, ToggleButton } from '@mui/material';
+
 import { ITodolist } from '../types/interfaces';
+import { FilterByValueTypes } from '../types/types';
 import Task from './Task';
 import * as S from './TodolistStyles';
-import { FilterByValueTypes } from '../types/types';
 
 const Todolist = ({
   title,

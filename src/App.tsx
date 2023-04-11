@@ -1,5 +1,5 @@
-import Todolist from './Components/TodolistCointainer';
 import { tasks } from './utils/constants';
+import Todolist from './Components/TodolistCointainer';
 import VisuallyHidden from './Common/VisuallyHidden';
 
 const App = () => {
