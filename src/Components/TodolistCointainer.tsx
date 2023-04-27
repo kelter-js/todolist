@@ -8,7 +8,9 @@ import Todolist from './Todolist';
 
 const TodolistCointainer = ({
   title,
-  tasks
+  tasks,
+  id,
+  deleteTodoList
 }: ITodolistContainer): JSX.Element => {
   const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
   const [filterValue, setFilterValue] = useState<FilterByValueTypes>("all");
@@ -57,12 +59,14 @@ const TodolistCointainer = ({
   return (
     <Todolist
       title={title}
+      id={id}
       tasks={tasksToRender}
       removeTask={removeTask}
       changeFilter={onChangeFilter}
       currentFilter={filterValue}
       changeTaskMark={markTask}
       addTask={addTask}
+      deleteTodoList={deleteTodoList}
     />
   );
 }

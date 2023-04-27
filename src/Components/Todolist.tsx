@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ChangeEvent, KeyboardEvent, MouseEvent } from 'react';
 import { Button, TextField, ToggleButton } from '@mui/material';
 
 import { ITodolist } from '../types/interfaces';
@@ -9,16 +9,18 @@ import * as S from './TodolistStyles';
 const Todolist = ({
   title,
   tasks,
+  id,
   removeTask,
   changeFilter,
   currentFilter,
   changeTaskMark,
   addTask,
+  deleteTodoList
 }: ITodolist): JSX.Element => {
   const [taskDescription, setTaskDescription] = useState<string>('');
   const [helperText, setHelperText] = useState<string>('');
 
-  const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
     setTaskDescription(e.target.value);
     setHelperText('');
   }
@@ -32,13 +34,13 @@ const Todolist = ({
     }
   }
 
-  const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       createTask();
     }
   }
 
-  const onChangeFilterClick = (e: React.MouseEvent<HTMLElement>) => {
+  const onChangeFilterClick = (e: MouseEvent<HTMLElement>) => {
     const { name } = (e.target as HTMLButtonElement);
 
     changeFilter(name as FilterByValueTypes);
@@ -89,6 +91,7 @@ const Todolist = ({
         >Completed
         </ToggleButton>
       </S.ControlsContainer>
+      <S.DeleteButton onClick={() => deleteTodoList(id)}>X</S.DeleteButton>
     </S.Container>
   );
 }

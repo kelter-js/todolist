@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from '@mui/material/Button/Button';
 
 export const Container = styled.div`
   width: 100%;
@@ -50,3 +51,12 @@ export const ControlsContainer = styled.div`
   }
 `;
 
+export const DeleteButton = styled(Button)`
+  && {
+    position: absolute;
+    top: -26px;
+    right: -32px;
+    border-radius: 50%;
+    font-size: 25px;
+  }
+`
