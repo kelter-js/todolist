@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import Button from '@mui/material/Button/Button';
+import styled from "styled-components";
+import Button from "@mui/material/Button/Button";
 
 export const Container = styled.div`
   width: 100%;
@@ -8,13 +8,13 @@ export const Container = styled.div`
   padding: 10px;
   position: relative;
   background: white;
-  border-radius: 0% 0% 0% 0% / 0% 0% 0% 0% ;
-  box-shadow: 20px 20px rgba(0,0,0,.15);
-  transition: all .4s ease;
+  border-radius: 0% 0% 0% 0% / 0% 0% 0% 0%;
+  box-shadow: 20px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s ease;
 
   &:hover {
     border-radius: 0% 0% 30% 30% / 0% 0% 3% 3%;
-    box-shadow: 10px 10px rgba(0,0,0,.25);
+    box-shadow: 10px 10px rgba(0, 0, 0, 0.25);
   }
 `;
 
@@ -59,4 +59,15 @@ export const DeleteButton = styled(Button)`
     border-radius: 50%;
     font-size: 25px;
   }
-`
+`;
+
+export const AddNewTaskListContainer = styled.div`
+  height: min-content;
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: #fff;
+`;
+
+export const EditableText = styled.p`
+  user-select: none;
+`;

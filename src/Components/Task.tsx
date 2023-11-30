@@ -1,7 +1,9 @@
-import { Checkbox, Button } from '@mui/material';
-import styled from 'styled-components';
+import { Checkbox, Button } from "@mui/material";
+import styled from "styled-components";
 
-import { ITaskComponent } from '../types/interfaces';
+import { ITaskComponent } from "../types/interfaces";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditableTitle from "./EditableTitle";
 
 const TaskItem = styled.li`
   display: flex;
@@ -19,7 +21,8 @@ const Task = ({
   isDone,
   id,
   onDelete,
-  onChangeMark
+  onChangeMark,
+  handleTaskDescriptionChange,
 }: ITaskComponent): JSX.Element => {
   const onChange = () => onChangeMark(id);
 
@@ -28,11 +31,17 @@ const Task = ({
   return (
     <TaskItem>
       <Checkbox onChange={onChange} checked={isDone} />
-      <p>{description}</p>
-      <Button onClick={deleteTask} color='warning' variant='contained'>Remove</Button>
+      <EditableTitle
+        title={description}
+        id={id}
+        handleTaskChange={handleTaskDescriptionChange}
+      />
+      <Button onClick={deleteTask} color="warning" variant="contained">
+        <DeleteForeverIcon />
+        Remove
+      </Button>
     </TaskItem>
   );
-}
+};
 
 export default Task;
-

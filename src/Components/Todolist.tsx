@@ -1,10 +1,12 @@
-import { useState, ChangeEvent, KeyboardEvent, MouseEvent } from 'react';
-import { Button, TextField, ToggleButton } from '@mui/material';
+import { MouseEvent } from "react";
+import { ToggleButton } from "@mui/material";
 
-import { ITodolist } from '../types/interfaces';
-import { FilterByValueTypes } from '../types/types';
-import Task from './Task';
-import * as S from './TodolistStyles';
+import { ITodolist } from "../types/interfaces";
+import { FilterByValueTypes } from "../types/types";
+import EditableTitle from "./EditableTitle";
+import AddItemForm from "./AddItemForm";
+import Task from "./Task";
+import * as S from "./TodolistStyles";
 
 const Todolist = ({
   title,
@@ -15,86 +17,69 @@ const Todolist = ({
   currentFilter,
   changeTaskMark,
   addTask,
-  deleteTodoList
+  deleteTodoList,
+  handleTaskListTitleChange,
+  handleTaskDescriptionChange,
 }: ITodolist): JSX.Element => {
-  const [taskDescription, setTaskDescription] = useState<string>('');
-  const [helperText, setHelperText] = useState<string>('');
-
-  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setTaskDescription(e.target.value);
-    setHelperText('');
-  }
-
-  const createTask = () => {
-    if (taskDescription) {
-      addTask(taskDescription);
-      setTaskDescription('');
-    } else {
-      setHelperText('Can`t create task with empty description');
-    }
-  }
-
-  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      createTask();
-    }
-  }
-
   const onChangeFilterClick = (e: MouseEvent<HTMLElement>) => {
-    const { name } = (e.target as HTMLButtonElement);
+    const { name } = e.target as HTMLButtonElement;
 
     changeFilter(name as FilterByValueTypes);
-  }
+  };
 
   return (
     <S.Container>
-      <S.Header>{title}</S.Header>
-      <S.TextContainer>
-        <TextField
-          onKeyDown={onEnter}
-          label='Task information'
-          value={taskDescription}
-          onChange={onInput}
-          error={Boolean(helperText)}
-          helperText={helperText}
+      <S.Header>
+        <EditableTitle
+          title={title}
+          id={id}
+          handleTaskChange={handleTaskListTitleChange}
         />
-        <Button onClick={createTask} variant='contained' color='info'>Add</Button>
-      </S.TextContainer>
+      </S.Header>
+      <AddItemForm onAddItem={addTask} />
       <S.List>
-        {tasks.map((item) => <Task onChangeMark={changeTaskMark} key={item.id} {...item} onDelete={removeTask} />)}
+        {tasks.map((item) => (
+          <Task
+            handleTaskDescriptionChange={handleTaskDescriptionChange}
+            onChangeMark={changeTaskMark}
+            key={item.id}
+            {...item}
+            onDelete={removeTask}
+          />
+        ))}
       </S.List>
       <S.ControlsContainer>
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === 'all'}
-          name='all'
+          selected={currentFilter === "all"}
+          name="all"
           onClick={onChangeFilterClick}
-          color='info'
+          color="info"
         >
           All
         </ToggleButton>
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === 'active'}
-          name='active'
+          selected={currentFilter === "active"}
+          name="active"
           onClick={onChangeFilterClick}
-          color='info'
+          color="info"
         >
           Active
         </ToggleButton>
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === 'completed'}
-          name='completed'
+          selected={currentFilter === "completed"}
+          name="completed"
           onClick={onChangeFilterClick}
-          color='success'
-        >Completed
+          color="success"
+        >
+          Completed
         </ToggleButton>
       </S.ControlsContainer>
       <S.DeleteButton onClick={() => deleteTodoList(id)}>X</S.DeleteButton>
     </S.Container>
   );
-}
+};
 
 export default Todolist;
-
