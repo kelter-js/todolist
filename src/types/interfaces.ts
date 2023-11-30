@@ -13,6 +13,7 @@ export interface ITask {
 export interface ITaskComponent extends ITask {
   onDelete: (id: string) => void;
   onChangeMark: (id: string) => void;
+  handleTaskDescriptionChange: (id: string, title: string) => void;
 }
 
 export interface ITodoListsState {
@@ -23,6 +24,7 @@ export interface ITodoListsState {
 
 export interface ITodolistContainer extends ITodoListsState {
   deleteTodoList: (id: string) => void;
+  handleTaskListTitleChange: (id: string, title: string) => void;
 }
 
 export interface ITodolist extends ITodolistContainer {
@@ -32,4 +34,5 @@ export interface ITodolist extends ITodolistContainer {
   changeTaskMark: (id: string) => void;
   addTask: (description: string) => void;
   deleteTodoList: (id: string) => void;
+  handleTaskDescriptionChange: (id: string, title: string) => void;
 }
