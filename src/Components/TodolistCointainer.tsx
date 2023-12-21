@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
 import { v1 } from "uuid";
 
-import { ITodolistContainer } from "../types/interfaces";
-import { FilterByValueTypes } from "../types/types";
-import { ITask } from "../types/interfaces";
+import { ITodolistContainer, ITask } from "../types/interfaces";
+import { FilterByValueTypes } from "../types";
+import { TASKS_STATUSES } from "../view";
 import Todolist from "./Todolist";
 
 const TodolistCointainer = ({
@@ -11,10 +11,12 @@ const TodolistCointainer = ({
   tasks,
   id,
   deleteTodoList,
-  handleTaskListTitleChange
+  handleTaskListTitleChange,
 }: ITodolistContainer): JSX.Element => {
   const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
-  const [filterValue, setFilterValue] = useState<FilterByValueTypes>("all");
+  const [filterValue, setFilterValue] = useState<FilterByValueTypes>(
+    TASKS_STATUSES.ALL
+  );
 
   const removeTask = (id: string) => {
     setTasks(tasksList.filter((item) => item.id !== id));
@@ -39,10 +41,13 @@ const TodolistCointainer = ({
 
     target.isDone = !target.isDone;
 
-    if (filterValue === "completed" || filterValue === "active") {
+    if (
+      filterValue === TASKS_STATUSES.COMPLETED ||
+      filterValue === TASKS_STATUSES.ACTIVE
+    ) {
       setTasks(
         tasksList.filter((item) =>
-          filterValue === "completed"
+          filterValue === TASKS_STATUSES.COMPLETED
             ? item.isDone === true
             : item.isDone === false
         )
@@ -62,9 +67,9 @@ const TodolistCointainer = ({
 
   const tasksToRender = useMemo(() => {
     switch (filterValue) {
-      case "completed":
+      case TASKS_STATUSES.COMPLETED:
         return tasksList.filter((item) => item.isDone === true);
-      case "active":
+      case TASKS_STATUSES.ACTIVE:
         return tasksList.filter((item) => item.isDone === false);
       default:
         return [...tasksList];

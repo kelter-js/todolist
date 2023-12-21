@@ -3,8 +3,11 @@ import {
   tasksReducer,
   markTaskAsDone,
   removeTask,
+  changeTaskDescription,
+  changeTaskFilter
 } from "./tasks-reducer";
 import { ITask } from "../types/interfaces";
+import { TASKS_STATUSES } from "../view";
 
 let initialState: ITask[] = [
   { id: "1", description: "css", isDone: false },
@@ -68,5 +71,86 @@ test("should change dedicated task status", () => {
 
   expect(finalState.length).toBe(initialState.length);
   expect(getTaskStatus(finalState)).toBeFalsy();
+  expect(finalState).not.toBe(initialState);
+});
+
+test("should change dedicated task title", () => {
+  const TASK_ID = "2";
+  const NEW_TASK_DESCRIPTION = "newTaskDescription";
+
+  const getTaskDescription = (tasks: ITask[]) => {
+    const [taskToChangeStatus] = tasks.filter((task) => task.id === TASK_ID);
+    return taskToChangeStatus.description;
+  };
+
+  expect(getTaskDescription(initialState)).toBe(initialState[1].description);
+
+  const finalState = tasksReducer(
+    initialState,
+    changeTaskDescription(TASK_ID, NEW_TASK_DESCRIPTION)
+  );
+
+  expect(finalState.length).toBe(initialState.length);
+  expect(getTaskDescription(finalState)).toBe(NEW_TASK_DESCRIPTION);
+  expect(finalState).not.toBe(initialState);
+});
+
+test("should change state filter settings and return only in progress tasks", () => {
+  expect(initialState.length).toBe(3);
+
+  const finalState = tasksReducer(
+    initialState,
+    changeTaskFilter(TASKS_STATUSES.ACTIVE)
+  );
+
+  expect(finalState.length).toBe(initialState.filter(task => !task.isDone).length);
+  expect(finalState[0].description).toBe(initialState[0].description);
+  expect(finalState[0].id).toBe(initialState[0].id);
+  expect(finalState[1].description).toBe(initialState[2].description);
+  expect(finalState[1].id).toBe(initialState[2].id);
+  expect(finalState).not.toBe(initialState);
+});
+
+test("should change state filter settings and return only done tasks", () => {
+  expect(initialState.length).toBe(3);
+
+  const finalState = tasksReducer(
+    initialState,
+    changeTaskFilter(TASKS_STATUSES.COMPLETED)
+  );
+
+  expect(finalState.length).toBe(initialState.filter(task => task.isDone).length);
+  expect(finalState[0].description).toBe(initialState[1].description);
+  expect(finalState[0].id).toBe(initialState[1].id);
+  expect(finalState).not.toBe(initialState);
+});
+
+test("should change state filter settings, set it back and return correct tasks list", () => {
+  expect(initialState.length).toBe(3);
+
+  let finalState = tasksReducer(
+    initialState,
+    changeTaskFilter(TASKS_STATUSES.ACTIVE)
+  );
+
+  expect(finalState.length).toBe(initialState.filter(task => !task.isDone).length);
+  expect(finalState[0].description).toBe(initialState[0].description);
+  expect(finalState[0].id).toBe(initialState[0].id);
+  expect(finalState[1].description).toBe(initialState[2].description);
+  expect(finalState[1].id).toBe(initialState[2].id);
+  expect(finalState).not.toBe(initialState);
+
+  finalState = tasksReducer(
+    initialState,
+    changeTaskFilter(TASKS_STATUSES.ALL)
+  );
+
+  expect(finalState.length).toBe(initialState.length);
+  expect(finalState[0].description).toBe(initialState[0].description);
+  expect(finalState[0].id).toBe(initialState[0].id);
+  expect(finalState[1].description).toBe(initialState[1].description);
+  expect(finalState[1].id).toBe(initialState[1].id);
+  expect(finalState[2].description).toBe(initialState[2].description);
+  expect(finalState[2].id).toBe(initialState[2].id);
   expect(finalState).not.toBe(initialState);
 });

@@ -2,7 +2,7 @@ import { MouseEvent } from "react";
 import { ToggleButton } from "@mui/material";
 
 import { ITodolist } from "../types/interfaces";
-import { FilterByValueTypes } from "../types/types";
+import { FilterByValueTypes } from "../types";
 import EditableTitle from "./EditableTitle";
 import AddItemForm from "./AddItemForm";
 import Task from "./Task";

@@ -1,1 +1,0 @@
-export type FilterByValueTypes = 'all' | 'completed' | 'active';

@@ -51,20 +51,17 @@ const App = (): JSX.Element => {
     setTodoLists((state) => [...state]);
   };
 
-  const renderTodoLists = () => {
-    return todoLists.map(({ title, tasks, id }) => {
-      return (
-        <Todolist
-          deleteTodoList={handleTodoListDeletion}
-          title={title}
-          tasks={tasks}
-          key={id}
-          id={id}
-          handleTaskListTitleChange={handleTaskListTitleChange}
-        />
-      );
-    });
-  };
+  const renderTodoLists = () =>
+    todoLists.map(({ title, tasks, id }) => (
+      <Todolist
+        deleteTodoList={handleTodoListDeletion}
+        title={title}
+        tasks={tasks}
+        key={id}
+        id={id}
+        handleTaskListTitleChange={handleTaskListTitleChange}
+      />
+    ));
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { FilterByValueTypes } from './types';
+import { FilterByValueTypes } from '.';
 
 export interface IVisuallyHidden {
   children: string | JSX.Element | JSX.Element[];
