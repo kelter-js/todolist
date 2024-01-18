@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useReducer } from "react";
 import { v1 } from "uuid";
 
 import { ITodolistContainer, ITask } from "../types/interfaces";
 import { FilterByValueTypes } from "../types";
 import { TASKS_STATUSES } from "../view";
 import Todolist from "./Todolist";
+import { tasksReducer, initialState } from "../state/tasks-reducer";
 
 const TodolistCointainer = ({
   title,
@@ -13,6 +14,7 @@ const TodolistCointainer = ({
   deleteTodoList,
   handleTaskListTitleChange,
 }: ITodolistContainer): JSX.Element => {
+  const [state, dispatch] = useReducer(tasksReducer, initialState);
   const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
   const [filterValue, setFilterValue] = useState<FilterByValueTypes>(
     TASKS_STATUSES.ALL

@@ -1,10 +1,4 @@
-import { useState, useCallback } from "react";
-import { v1 } from "uuid";
-
-import { tasks } from "./utils/constants";
-import { ITodoListsState } from "./types/interfaces";
-import { AddNewTaskListContainer } from "./Components/TodolistStyles";
-import Todolist from "./Components/TodolistCointainer";
+import { useCallback, useReducer } from "react";
 import {
   AppBar,
   Container,
@@ -14,41 +8,38 @@ import {
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+
+import { AddNewTaskListContainer } from "./Components/TodolistStyles";
+import Todolist from "./Components/TodolistCointainer";
 import AddItemForm from "./Components/AddItemForm";
+
+import {
+  initialState,
+  todolistsReducer,
+  changeTodolistTitle,
+  removeTodolist,
+  addTodolist,
+} from "./state/todolists-reducer";
+
 import VisuallyHidden from "./Common/VisuallyHidden";
 import styles from "./styles.module.css";
 
 const App = (): JSX.Element => {
-  const [todoLists, setTodoLists] = useState<ITodoListsState[]>([
-    {
-      id: v1(),
-      title: "",
-      tasks,
-    },
-    {
-      id: v1(),
-      title: "some",
-      tasks,
-    },
-  ]);
+  const [todoLists, dispatch] = useReducer(todolistsReducer, initialState);
 
   const handleAddTodoList = useCallback((title: string) => {
-    setTodoLists((state) => [...state, { id: v1(), title, tasks: [] }]);
+    dispatch(addTodolist(title));
   }, []);
 
   const handleTodoListDeletion = useCallback(
     (id: string) => {
-      setTodoLists((state) => state.filter((item) => item.id !== id));
+      dispatch(removeTodolist(id));
     },
     [todoLists]
   );
 
   const handleTaskListTitleChange = (id: string, title: string) => {
-    const [target] = todoLists.filter((item) => item.id === id);
-
-    target.title = title;
-
-    setTodoLists((state) => [...state]);
+    dispatch(changeTodolistTitle(title, id));
   };
 
   const renderTodoLists = () =>

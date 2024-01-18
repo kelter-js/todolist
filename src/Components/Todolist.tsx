@@ -3,6 +3,7 @@ import { ToggleButton } from "@mui/material";
 
 import { ITodolist } from "../types/interfaces";
 import { FilterByValueTypes } from "../types";
+import { TASKS_STATUSES } from "../view";
 import EditableTitle from "./EditableTitle";
 import AddItemForm from "./AddItemForm";
 import Task from "./Task";
@@ -36,7 +37,9 @@ const Todolist = ({
           handleTaskChange={handleTaskListTitleChange}
         />
       </S.Header>
+
       <AddItemForm onAddItem={addTask} />
+
       <S.List>
         {tasks.map((item) => (
           <Task
@@ -48,29 +51,32 @@ const Todolist = ({
           />
         ))}
       </S.List>
+
       <S.ControlsContainer>
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === "all"}
-          name="all"
+          selected={currentFilter === TASKS_STATUSES.ALL}
+          name={TASKS_STATUSES.ALL}
           onClick={onChangeFilterClick}
           color="info"
         >
           All
         </ToggleButton>
+
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === "active"}
-          name="active"
+          selected={currentFilter === TASKS_STATUSES.ACTIVE}
+          name={TASKS_STATUSES.ACTIVE}
           onClick={onChangeFilterClick}
           color="info"
         >
           Active
         </ToggleButton>
+
         <ToggleButton
           value={currentFilter}
-          selected={currentFilter === "completed"}
-          name="completed"
+          selected={currentFilter === TASKS_STATUSES.COMPLETED}
+          name={TASKS_STATUSES.COMPLETED}
           onClick={onChangeFilterClick}
           color="success"
         >
