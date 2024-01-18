@@ -1,6 +1,7 @@
+import { v1 } from "uuid";
+
 import { ITask } from "../types/interfaces";
 import { FilterByValueTypes } from "../types";
-import { v1 } from "uuid";
 import { TASKS_STATUSES } from "../view";
 
 enum ACTION_NAMES_ENUM {
@@ -46,46 +47,72 @@ type ActionsTypes =
   | CHANGE_TASK_DESCRIPTION_TYPE
   | CHANGE_TASK_FILTER;
 
-export const tasksReducer = (state: ITask[], action: ActionsTypes): ITask[] => {
+export interface TodolistState {
+  filterType: FilterByValueTypes;
+  tasksList: ITask[];
+}
+
+export const initialState: TodolistState = {
+  filterType: TASKS_STATUSES.ALL,
+  tasksList: [],
+};
+
+export const tasksReducer = (
+  state: TodolistState,
+  action: ActionsTypes
+): TodolistState => {
   switch (action.type) {
     case ACTION_NAMES_ENUM.REMOVE_TASK_FROM_LIST:
-      return state.filter((item) => item.id !== action.id);
+      return {
+        ...state,
+        tasksList: state.tasksList.filter((item) => item.id !== action.id),
+      };
 
     case ACTION_NAMES_ENUM.ADD_TASK_TO_LIST:
-      return [
+      return {
         ...state,
-        {
-          description: action.description,
-          id: action.id,
-          isDone: action.isDone,
-        },
-      ];
+        tasksList: [
+          ...state.tasksList,
+          {
+            description: action.description,
+            id: action.id,
+            isDone: action.isDone,
+          },
+        ],
+      };
 
     case ACTION_NAMES_ENUM.CHANGE_TASK_STATUS:
-      const [taskToChangeStatus] = state.filter(
+      const [taskToChangeStatus] = state.tasksList.filter(
         (task) => task.id === action.id
       );
+
       taskToChangeStatus.isDone = !taskToChangeStatus.isDone;
 
-      return [...state];
+      return { ...state };
 
     case ACTION_NAMES_ENUM.CHANGE_TASK_DESCRIPTION:
-      const [taskToChangeDescription] = state.filter(
+      const [taskToChangeDescription] = state.tasksList.filter(
         (task) => task.id === action.id
       );
 
       taskToChangeDescription.description = action.description;
 
-      return [...state];
+      return { ...state };
 
     case ACTION_NAMES_ENUM.CHANGE_TASK_FILTER:
       switch (action.filterType) {
         case TASKS_STATUSES.COMPLETED:
-          return state.filter((item) => item.isDone === true);
+          return {
+            ...state,
+            tasksList: state.tasksList.filter((item) => item.isDone),
+          };
         case TASKS_STATUSES.ACTIVE:
-          return state.filter((item) => item.isDone === false);
+          return {
+            ...state,
+            tasksList: state.tasksList.filter((item) => !item.isDone),
+          };
         default:
-          return [...state];
+          return { ...state };
       }
 
     default:

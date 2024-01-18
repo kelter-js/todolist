@@ -1,5 +1,7 @@
-import { ITodoListsState } from "../types/interfaces";
 import { v1 } from "uuid";
+
+import { ITodoListsState } from "../types/interfaces";
+import { tasks } from "../utils/constants";
 
 enum ACTION_NAMES_ENUM {
   REMOVE_TODOLIST = "REMOVE_TODOLIST",
@@ -28,6 +30,19 @@ type ActionsTypes =
   | RemoveTodolistActionType
   | AddTodolistActionType
   | ChangeTodolistTitleActionType;
+
+export const initialState: ITodoListsState[] = [
+  {
+    id: v1(),
+    title: "testName",
+    tasks,
+  },
+  {
+    id: v1(),
+    title: "some",
+    tasks,
+  },
+];
 
 export const todolistsReducer = (
   state: ITodoListsState[],
