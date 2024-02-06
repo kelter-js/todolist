@@ -1,11 +1,17 @@
-import { useState, useMemo, useReducer } from "react";
-import { v1 } from "uuid";
+import { useReducer, useMemo } from "react";
 
-import { ITodolistContainer, ITask } from "../types/interfaces";
+import { ITodolistContainer } from "../types/interfaces";
 import { FilterByValueTypes } from "../types";
-import { TASKS_STATUSES } from "../view";
+import {
+  tasksReducer,
+  initialState,
+  removeTask as removeTaskAction,
+  changeTaskFilter,
+  addTask as addTaskAction,
+  markTaskAsDone,
+  changeTaskDescription,
+} from "../state/tasks-reducer";
 import Todolist from "./Todolist";
-import { tasksReducer, initialState } from "../state/tasks-reducer";
 
 const TodolistCointainer = ({
   title,
@@ -14,69 +20,39 @@ const TodolistCointainer = ({
   deleteTodoList,
   handleTaskListTitleChange,
 }: ITodolistContainer): JSX.Element => {
-  const [state, dispatch] = useReducer(tasksReducer, initialState);
-  const [tasksList, setTasks] = useState<ITask[]>([...tasks]);
-  const [filterValue, setFilterValue] = useState<FilterByValueTypes>(
-    TASKS_STATUSES.ALL
-  );
+  const [state, dispatch] = useReducer(tasksReducer, {
+    ...initialState,
+    tasksList: tasks,
+  });
 
   const removeTask = (id: string) => {
-    setTasks(tasksList.filter((item) => item.id !== id));
+    dispatch(removeTaskAction(id));
   };
 
   const onChangeFilter = (filter: FilterByValueTypes) => {
-    setFilterValue(filter);
+    dispatch(changeTaskFilter(filter));
   };
 
   const addTask = (description: string) => {
-    const task = {
-      id: v1(),
-      description: description.trim(),
-      isDone: false,
-    };
-
-    setTasks((tasks) => [...tasks, task]);
+    dispatch(addTaskAction(description));
   };
 
   const markTask = (id: string) => {
-    const [target] = tasksList.filter((item) => item.id === id);
-
-    target.isDone = !target.isDone;
-
-    if (
-      filterValue === TASKS_STATUSES.COMPLETED ||
-      filterValue === TASKS_STATUSES.ACTIVE
-    ) {
-      setTasks(
-        tasksList.filter((item) =>
-          filterValue === TASKS_STATUSES.COMPLETED
-            ? item.isDone === true
-            : item.isDone === false
-        )
-      );
-    } else {
-      setTasks([...tasksList]);
-    }
+    dispatch(markTaskAsDone(id));
   };
 
   const handleTaskDescriptionChange = (id: string, description: string) => {
-    const [target] = tasksList.filter((item) => item.id === id);
-
-    target.description = description;
-
-    setTasks([...tasksList]);
+    dispatch(changeTaskDescription(id, description));
   };
 
-  const tasksToRender = useMemo(() => {
-    switch (filterValue) {
-      case TASKS_STATUSES.COMPLETED:
-        return tasksList.filter((item) => item.isDone === true);
-      case TASKS_STATUSES.ACTIVE:
-        return tasksList.filter((item) => item.isDone === false);
-      default:
-        return [...tasksList];
-    }
-  }, [filterValue, tasksList]);
+  const tasksToRender = useMemo(
+    () => state.getTasksView(state),
+    [
+      state.filterType,
+      state.tasksList,
+      ...state.tasksList.map((item) => item.isDone),
+    ]
+  );
 
   return (
     <Todolist
@@ -85,7 +61,7 @@ const TodolistCointainer = ({
       tasks={tasksToRender}
       removeTask={removeTask}
       changeFilter={onChangeFilter}
-      currentFilter={filterValue}
+      currentFilter={state.filterType}
       changeTaskMark={markTask}
       addTask={addTask}
       deleteTodoList={deleteTodoList}
