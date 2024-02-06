@@ -50,11 +50,24 @@ type ActionsTypes =
 export interface TodolistState {
   filterType: FilterByValueTypes;
   tasksList: ITask[];
+  getTasksView: (state: TodolistState) => ITask[];
 }
+
+export const filterTasksByStatus = (state: TodolistState): ITask[] => {
+  switch (state.filterType) {
+    case TASKS_STATUSES.COMPLETED:
+      return state.tasksList.filter((item) => item.isDone === true);
+    case TASKS_STATUSES.ACTIVE:
+      return state.tasksList.filter((item) => item.isDone === false);
+    default:
+      return [...state.tasksList];
+  }
+};
 
 export const initialState: TodolistState = {
   filterType: TASKS_STATUSES.ALL,
   tasksList: [],
+  getTasksView: filterTasksByStatus,
 };
 
 export const tasksReducer = (
@@ -104,15 +117,15 @@ export const tasksReducer = (
         case TASKS_STATUSES.COMPLETED:
           return {
             ...state,
-            tasksList: state.tasksList.filter((item) => item.isDone),
+            filterType: action.filterType,
           };
         case TASKS_STATUSES.ACTIVE:
           return {
             ...state,
-            tasksList: state.tasksList.filter((item) => !item.isDone),
+            filterType: action.filterType,
           };
         default:
-          return { ...state };
+          return { ...state, filterType: action.filterType };
       }
 
     default:

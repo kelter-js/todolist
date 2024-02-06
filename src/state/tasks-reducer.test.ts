@@ -6,6 +6,7 @@ import {
   changeTaskDescription,
   changeTaskFilter,
   TodolistState,
+  filterTasksByStatus,
 } from "./tasks-reducer";
 import { ITask } from "../types/interfaces";
 import { TASKS_STATUSES } from "../view";
@@ -17,6 +18,7 @@ let initialState: TodolistState = {
     { id: "2", description: "js", isDone: true },
     { id: "3", description: "react", isDone: false },
   ],
+  getTasksView: filterTasksByStatus,
 };
 
 beforeEach(() => {
@@ -27,6 +29,7 @@ beforeEach(() => {
       { id: "2", description: "js", isDone: true },
       { id: "3", description: "react", isDone: false },
     ],
+    getTasksView: filterTasksByStatus,
   };
 });
 
@@ -40,7 +43,8 @@ test("correct task should be deleted from tasks list", () => {
   expect(finalState.tasksList.length).not.toBe(initialState.tasksList.length);
   expect(finalState.tasksList.length).toBe(initialState.tasksList.length - 1);
   expect(
-    finalState.tasksList.filter((task) => task.id === TASK_ID_TO_BE_REMOVED).length
+    finalState.tasksList.filter((task) => task.id === TASK_ID_TO_BE_REMOVED)
+      .length
   ).toBe(0);
   expect(finalState).not.toBe(initialState);
 });
@@ -116,17 +120,23 @@ test("should change state filter settings and return only in progress tasks", ()
     changeTaskFilter(TASKS_STATUSES.ACTIVE)
   );
 
-  expect(finalState.tasksList.length).toBe(
+  const filtratedTasks = finalState.getTasksView(finalState);
+
+  expect(filtratedTasks.length).toBe(
     initialState.tasksList.filter((task) => !task.isDone).length
   );
-  expect(finalState.tasksList[0].description).toBe(
+
+  expect(filtratedTasks[0].description).toBe(
     initialState.tasksList[0].description
   );
-  expect(finalState.tasksList[0].id).toBe(initialState.tasksList[0].id);
-  expect(finalState.tasksList[1].description).toBe(
+
+  expect(filtratedTasks[0].id).toBe(initialState.tasksList[0].id);
+
+  expect(filtratedTasks[1].description).toBe(
     initialState.tasksList[2].description
   );
-  expect(finalState.tasksList[1].id).toBe(initialState.tasksList[2].id);
+
+  expect(filtratedTasks[1].id).toBe(initialState.tasksList[2].id);
   expect(finalState).not.toBe(initialState);
 });
 
@@ -138,13 +148,15 @@ test("should change state filter settings and return only done tasks", () => {
     changeTaskFilter(TASKS_STATUSES.COMPLETED)
   );
 
-  expect(finalState.tasksList.length).toBe(
+  const filtratedTasks = finalState.getTasksView(finalState);
+
+  expect(filtratedTasks.length).toBe(
     initialState.tasksList.filter((task) => task.isDone).length
   );
-  expect(finalState.tasksList[0].description).toBe(
+  expect(filtratedTasks[0].description).toBe(
     initialState.tasksList[1].description
   );
-  expect(finalState.tasksList[0].id).toBe(initialState.tasksList[1].id);
+  expect(filtratedTasks[0].id).toBe(initialState.tasksList[1].id);
   expect(finalState).not.toBe(initialState);
 });
 
@@ -156,33 +168,36 @@ test("should change state filter settings, set it back and return correct tasks 
     changeTaskFilter(TASKS_STATUSES.ACTIVE)
   );
 
-  expect(finalState.tasksList.length).toBe(
+  let filtratedTasks = finalState.getTasksView(finalState);
+
+  expect(filtratedTasks.length).toBe(
     initialState.tasksList.filter((task) => !task.isDone).length
   );
-  expect(finalState.tasksList[0].description).toBe(
+  expect(filtratedTasks[0].description).toBe(
     initialState.tasksList[0].description
   );
-  expect(finalState.tasksList[0].id).toBe(initialState.tasksList[0].id);
-  expect(finalState.tasksList[1].description).toBe(
+  expect(filtratedTasks[0].id).toBe(initialState.tasksList[0].id);
+  expect(filtratedTasks[1].description).toBe(
     initialState.tasksList[2].description
   );
-  expect(finalState.tasksList[1].id).toBe(initialState.tasksList[2].id);
+  expect(filtratedTasks[1].id).toBe(initialState.tasksList[2].id);
   expect(finalState).not.toBe(initialState);
 
   finalState = tasksReducer(initialState, changeTaskFilter(TASKS_STATUSES.ALL));
+  filtratedTasks = finalState.getTasksView(finalState);
 
-  expect(finalState.tasksList.length).toBe(initialState.tasksList.length);
-  expect(finalState.tasksList[0].description).toBe(
+  expect(filtratedTasks.length).toBe(initialState.tasksList.length);
+  expect(filtratedTasks[0].description).toBe(
     initialState.tasksList[0].description
   );
-  expect(finalState.tasksList[0].id).toBe(initialState.tasksList[0].id);
-  expect(finalState.tasksList[1].description).toBe(
+  expect(filtratedTasks[0].id).toBe(initialState.tasksList[0].id);
+  expect(filtratedTasks[1].description).toBe(
     initialState.tasksList[1].description
   );
-  expect(finalState.tasksList[1].id).toBe(initialState.tasksList[1].id);
-  expect(finalState.tasksList[2].description).toBe(
+  expect(filtratedTasks[1].id).toBe(initialState.tasksList[1].id);
+  expect(filtratedTasks[2].description).toBe(
     initialState.tasksList[2].description
   );
-  expect(finalState.tasksList[2].id).toBe(initialState.tasksList[2].id);
+  expect(filtratedTasks[2].id).toBe(initialState.tasksList[2].id);
   expect(finalState).not.toBe(initialState);
 });
