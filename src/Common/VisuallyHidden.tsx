@@ -1,6 +1,7 @@
-import React from 'react';
-import { IVisuallyHidden } from '../types/interfaces';
-import styled from 'styled-components';
+import { FC } from "react";
+import styled from "styled-components";
+
+import { VisuallyHiddenProps } from "../types/interfaces";
 
 const Hider = styled.div`
   position: absolute;
@@ -15,13 +16,8 @@ const Hider = styled.div`
   overflow: hidden;
 `;
 
-const VisuallyHidden = ({ children }: IVisuallyHidden): JSX.Element => {
-  return (
-    <Hider>
-      {children}
-    </Hider>
-  );
-}
+const VisuallyHidden: FC<VisuallyHiddenProps> = ({ children }) => (
+  <Hider>{children}</Hider>
+);
 
 export default VisuallyHidden;
-

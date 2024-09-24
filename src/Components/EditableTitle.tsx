@@ -1,18 +1,13 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
+import { FC, useState, KeyboardEvent, ChangeEvent, memo } from "react";
 
+import { EditableTitleProps } from "../types/interfaces";
 import { EditableText } from "./TodolistStyles";
 
-interface IEditableTitleProps {
-  title: string;
-  id: string;
-  handleTaskChange: (id: string, title: string) => void;
-}
-
-const EditableTitle = ({
+const EditableTitle: FC<EditableTitleProps> = ({
   title,
   handleTaskChange,
   id,
-}: IEditableTitleProps): JSX.Element => {
+}) => {
   const [isEditMode, setEditMode] = useState(false);
 
   const handleSetEditMode = () => setEditMode((state) => !state);
@@ -27,18 +22,20 @@ const EditableTitle = ({
     handleTaskChange(id, e.target.value);
   };
 
-  return isEditMode ? (
-    <input
-      value={title}
-      autoFocus
-      onChange={onChange}
-      onClick={handleSetEditMode}
-      onKeyDown={onEnter}
-      onBlur={handleSetEditMode}
-    />
-  ) : (
-    <EditableText onClick={handleSetEditMode}>{title}</EditableText>
-  );
+  if (isEditMode) {
+    return (
+      <input
+        value={title}
+        autoFocus
+        onChange={onChange}
+        onClick={handleSetEditMode}
+        onKeyDown={onEnter}
+        onBlur={handleSetEditMode}
+      />
+    );
+  }
+
+  return <EditableText onClick={handleSetEditMode}>{title}</EditableText>;
 };
 
-export default EditableTitle;
+export default memo(EditableTitle);

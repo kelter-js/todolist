@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useMemo } from "react";
 import {
   AppBar,
   Container,
@@ -7,25 +7,30 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { AddNewTaskListContainer } from "./Components/TodolistStyles";
-import Todolist from "./Components/TodolistCointainer";
-import AddItemForm from "./Components/AddItemForm";
-
 import {
-  initialState,
-  todolistsReducer,
   changeTodolistTitle,
   removeTodolist,
   addTodolist,
+  removeTaskFromList,
+  changeTaskFromListStatus,
+  addTaskInTodolist,
 } from "./state/todolists-reducer";
-
+import { AddNewTaskListContainer } from "./Components/TodolistStyles";
+import { StateType } from "./state/store";
+import { TaskData, TodoListsStateData } from "./types/interfaces";
 import VisuallyHidden from "./Common/VisuallyHidden";
-import styles from "./styles.module.css";
+import Todolist from "./Components/TodolistContainer";
+import AddItemForm from "./Components/AddItemForm";
 
 const App = (): JSX.Element => {
-  const [todoLists, dispatch] = useReducer(todolistsReducer, initialState);
+  const dispatch = useDispatch();
+
+  const todoLists = useSelector<StateType, Array<TodoListsStateData>>(
+    (state) => state.todolists
+  );
 
   const handleAddTodoList = useCallback((title: string) => {
     dispatch(addTodolist(title));
@@ -38,21 +43,42 @@ const App = (): JSX.Element => {
     [todoLists]
   );
 
-  const handleTaskListTitleChange = (id: string, title: string) => {
+  const handleTaskListTitleChange = useCallback((id: string, title: string) => {
     dispatch(changeTodolistTitle(title, id));
-  };
+  }, []);
 
-  const renderTodoLists = () =>
-    todoLists.map(({ title, tasks, id }) => (
-      <Todolist
-        deleteTodoList={handleTodoListDeletion}
-        title={title}
-        tasks={tasks}
-        key={id}
-        id={id}
-        handleTaskListTitleChange={handleTaskListTitleChange}
-      />
-    ));
+  const handleRemoveTask = useCallback((listId: string, taskId: string) => {
+    dispatch(removeTaskFromList(listId, taskId));
+  }, []);
+
+  const handleChangeTaskStatus = useCallback(
+    (listId: string, taskId: string) => {
+      dispatch(changeTaskFromListStatus(listId, taskId));
+    },
+    []
+  );
+
+  const addTaskInList = useCallback((task: TaskData, listId: string) => {
+    dispatch(addTaskInTodolist(task, listId));
+  }, []);
+
+  const todoListsToRender = useMemo(
+    () =>
+      todoLists.map(({ title, tasks, id }) => (
+        <Todolist
+          deleteTodoList={handleTodoListDeletion}
+          title={title}
+          tasks={tasks}
+          key={id}
+          id={id}
+          handleTaskListTitleChange={handleTaskListTitleChange}
+          onRemoveTask={handleRemoveTask}
+          onChangeStatus={handleChangeTaskStatus}
+          onAddTask={addTaskInList}
+        />
+      )),
+    [todoLists, handleTodoListDeletion]
+  );
 
   return (
     <>
@@ -66,8 +92,9 @@ const App = (): JSX.Element => {
           >
             <MenuIcon />
           </IconButton>
+
           <Typography variant="h6" color="inherit" component="div">
-            Photos
+            To do lists
           </Typography>
         </Toolbar>
       </AppBar>
@@ -76,13 +103,19 @@ const App = (): JSX.Element => {
         <VisuallyHidden>To do list application</VisuallyHidden>
       </header>
 
-      <Container fixed disableGutters className={styles.container}>
+      <Container fixed disableGutters className={"container"} maxWidth="xl">
         <Grid container>
           <AddNewTaskListContainer>
             <AddItemForm onAddItem={handleAddTodoList} />
           </AddNewTaskListContainer>
         </Grid>
-        <Grid container>{renderTodoLists()}</Grid>
+
+        <Grid
+          container
+          sx={{ flexWrap: "nowrap", overflowX: "scroll", minWidth: "100vw" }}
+        >
+          {todoListsToRender}
+        </Grid>
       </Container>
     </>
   );

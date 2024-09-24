@@ -4,6 +4,7 @@ import Button from "@mui/material/Button/Button";
 export const Container = styled.div`
   width: 100%;
   max-width: 350px;
+  min-width: 350px;
   margin: 20px;
   padding: 10px;
   position: relative;
@@ -11,6 +12,7 @@ export const Container = styled.div`
   border-radius: 0% 0% 0% 0% / 0% 0% 0% 0%;
   box-shadow: 20px 20px rgba(0, 0, 0, 0.15);
   transition: all 0.4s ease;
+  box-sizing: border-box;
 
   &:hover {
     border-radius: 0% 0% 30% 30% / 0% 0% 3% 3%;

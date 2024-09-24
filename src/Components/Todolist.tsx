@@ -1,15 +1,15 @@
-import { MouseEvent } from "react";
+import { FC, MouseEvent, memo, useMemo } from "react";
 import { ToggleButton } from "@mui/material";
 
 import { ITodolist } from "../types/interfaces";
 import { FilterByValueTypes } from "../types";
-import { TASKS_STATUSES } from "../view";
+import { TASKS_STATUSES } from "../entities";
 import EditableTitle from "./EditableTitle";
 import AddItemForm from "./AddItemForm";
 import Task from "./Task";
 import * as S from "./TodolistStyles";
 
-const Todolist = ({
+const Todolist: FC<ITodolist> = ({
   title,
   tasks,
   id,
@@ -21,12 +21,28 @@ const Todolist = ({
   deleteTodoList,
   handleTaskListTitleChange,
   handleTaskDescriptionChange,
-}: ITodolist): JSX.Element => {
-  const onChangeFilterClick = (e: MouseEvent<HTMLElement>) => {
+}) => {
+  const handleChangeFilterClick = (e: MouseEvent<HTMLElement>) => {
     const { name } = e.target as HTMLButtonElement;
 
     changeFilter(name as FilterByValueTypes);
   };
+
+  const handleDeleteTaskList = () => deleteTodoList(id);
+
+  const tasksList = useMemo(
+    () =>
+      tasks.map((item) => (
+        <Task
+          handleTaskDescriptionChange={handleTaskDescriptionChange}
+          onChangeMark={changeTaskMark}
+          key={item.id}
+          {...item}
+          onDelete={removeTask}
+        />
+      )),
+    [tasks, handleTaskDescriptionChange, changeTaskMark, removeTask]
+  );
 
   return (
     <S.Container>
@@ -40,24 +56,14 @@ const Todolist = ({
 
       <AddItemForm onAddItem={addTask} />
 
-      <S.List>
-        {tasks.map((item) => (
-          <Task
-            handleTaskDescriptionChange={handleTaskDescriptionChange}
-            onChangeMark={changeTaskMark}
-            key={item.id}
-            {...item}
-            onDelete={removeTask}
-          />
-        ))}
-      </S.List>
+      <S.List>{tasksList}</S.List>
 
       <S.ControlsContainer>
         <ToggleButton
           value={currentFilter}
           selected={currentFilter === TASKS_STATUSES.ALL}
           name={TASKS_STATUSES.ALL}
-          onClick={onChangeFilterClick}
+          onClick={handleChangeFilterClick}
           color="info"
         >
           All
@@ -67,7 +73,7 @@ const Todolist = ({
           value={currentFilter}
           selected={currentFilter === TASKS_STATUSES.ACTIVE}
           name={TASKS_STATUSES.ACTIVE}
-          onClick={onChangeFilterClick}
+          onClick={handleChangeFilterClick}
           color="info"
         >
           Active
@@ -77,15 +83,16 @@ const Todolist = ({
           value={currentFilter}
           selected={currentFilter === TASKS_STATUSES.COMPLETED}
           name={TASKS_STATUSES.COMPLETED}
-          onClick={onChangeFilterClick}
+          onClick={handleChangeFilterClick}
           color="success"
         >
           Completed
         </ToggleButton>
       </S.ControlsContainer>
-      <S.DeleteButton onClick={() => deleteTodoList(id)}>X</S.DeleteButton>
+
+      <S.DeleteButton onClick={handleDeleteTaskList}>X</S.DeleteButton>
     </S.Container>
   );
 };
 
-export default Todolist;
+export default memo(Todolist);

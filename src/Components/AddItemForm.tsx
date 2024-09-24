@@ -1,35 +1,38 @@
-import { useState, ChangeEvent, KeyboardEvent } from "react";
+import { useState, ChangeEvent, KeyboardEvent, memo, useCallback } from "react";
 import { Button, TextField } from "@mui/material";
 
+import { AddItemFormProps } from "../types/interfaces";
 import { TextContainer } from "./TodolistStyles";
 
-interface IAddItemFormProps {
-  onAddItem: (data: string) => void;
-}
+const MISSING_DESCRIPTION_ERROR_TEXT =
+  "Can`t create task with empty description";
 
-const AddItemForm = ({ onAddItem }: IAddItemFormProps): JSX.Element => {
+const AddItemForm = ({ onAddItem }: AddItemFormProps): JSX.Element => {
   const [taskDescription, setTaskDescription] = useState("");
   const [helperText, setHelperText] = useState("");
 
-  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setTaskDescription(e.target.value);
     setHelperText("");
-  };
+  }, []);
 
-  const createTask = () => {
+  const createTask = useCallback(() => {
     if (taskDescription) {
       onAddItem(taskDescription);
       setTaskDescription("");
-    } else {
-      setHelperText("Can`t create task with empty description");
+    } else if (helperText !== MISSING_DESCRIPTION_ERROR_TEXT) {
+      setHelperText(MISSING_DESCRIPTION_ERROR_TEXT);
     }
-  };
+  }, [taskDescription, helperText, onAddItem]);
 
-  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      createTask();
-    }
-  };
+  const onEnter = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        createTask();
+      }
+    },
+    [createTask]
+  );
 
   return (
     <TextContainer>
@@ -41,6 +44,7 @@ const AddItemForm = ({ onAddItem }: IAddItemFormProps): JSX.Element => {
         error={Boolean(helperText)}
         helperText={helperText}
       />
+
       <Button onClick={createTask} variant="contained" color="info">
         Add
       </Button>
@@ -48,4 +52,4 @@ const AddItemForm = ({ onAddItem }: IAddItemFormProps): JSX.Element => {
   );
 };
 
-export default AddItemForm;
+export default memo(AddItemForm);

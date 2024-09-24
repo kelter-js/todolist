@@ -1,8 +1,9 @@
+import { FC } from "react";
 import { Checkbox, Button } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import styled from "styled-components";
 
-import { ITaskComponent } from "../types/interfaces";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { TaskComponent } from "../types/interfaces";
 import EditableTitle from "./EditableTitle";
 
 const TaskItem = styled.li`
@@ -16,27 +17,29 @@ const TaskItem = styled.li`
   }
 `;
 
-const Task = ({
+const Task: FC<TaskComponent> = ({
   description,
   isDone,
   id,
   onDelete,
   onChangeMark,
   handleTaskDescriptionChange,
-}: ITaskComponent): JSX.Element => {
-  const onChange = () => onChangeMark(id);
+}) => {
+  const handleChange = () => onChangeMark(id);
 
-  const deleteTask = () => onDelete(id);
+  const handleDeleteTask = () => onDelete(id);
 
   return (
     <TaskItem>
-      <Checkbox onChange={onChange} checked={isDone} />
+      <Checkbox onChange={handleChange} checked={isDone} />
+
       <EditableTitle
         title={description}
         id={id}
         handleTaskChange={handleTaskDescriptionChange}
       />
-      <Button onClick={deleteTask} color="warning" variant="contained">
+
+      <Button onClick={handleDeleteTask} color="warning" variant="contained">
         <DeleteForeverIcon />
         Remove
       </Button>

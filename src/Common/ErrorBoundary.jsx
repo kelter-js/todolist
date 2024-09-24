@@ -1,7 +1,7 @@
-import React from 'react';
-import Fallback from './Fallback';
+import { Component } from "react";
+import Fallback from "./Fallback";
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
@@ -14,7 +14,7 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    return this.state.hasError ? (<Fallback />) : this.props.children;
+    return this.state.hasError ? <Fallback /> : this.props.children;
   }
 }
 
