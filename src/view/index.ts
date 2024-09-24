@@ -1,5 +1,0 @@
-export enum TASKS_STATUSES {
-  ACTIVE = "ACTIVE",
-  COMPLETED = "COMPLETED",
-  ALL = "ALL",
-}
