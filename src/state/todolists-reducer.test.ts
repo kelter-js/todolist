@@ -1,7 +1,7 @@
 import { v1 } from "uuid";
 
 import { todolistsReducer } from "./todolists-reducer";
-import { ITodoListsState } from "../types/interfaces";
+import { TodoListsStateData } from "../types/interfaces";
 import {
   removeTodolist,
   addTodolist,
@@ -12,7 +12,7 @@ test("valid todolist should be removed from todolists", () => {
   const todolistFirstTestID = v1();
   const todolistSecondTestID = v1();
 
-  const initialState: ITodoListsState[] = [
+  const initialState: TodoListsStateData[] = [
     { id: todolistFirstTestID, title: "test title 1", tasks: [] },
     { id: todolistSecondTestID, title: "test title 2", tasks: [] },
   ];
@@ -32,7 +32,7 @@ test("valid todolist should be added", () => {
 
   const newTodolistTitle = "New Todolist";
 
-  const initialState: ITodoListsState[] = [
+  const initialState: TodoListsStateData[] = [
     { id: todolistFirstTestID, title: "test title 1", tasks: [] },
     { id: todolistSecondTestID, title: "test title 2", tasks: [] },
   ];
@@ -53,7 +53,7 @@ test("should change title of one of task lists", () => {
 
   const changedTodolistTitle = "Changed Todolist title";
 
-  const initialState: ITodoListsState[] = [
+  const initialState: TodoListsStateData[] = [
     { id: todolistFirstTestID, title: "test title 1", tasks: [] },
     { id: todolistSecondTestID, title: "test title 2", tasks: [] },
   ];
